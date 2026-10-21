@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For your eyes only</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Caveat & Dancing Script -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Dancing+Script:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            caveat: ['Caveat', 'cursive'],
+            dancing: ['Dancing Script', 'cursive'],
+          },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Styling & Aesthetic Variables */
+    :root {
+      --bg-gradient: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 50%, #e1bee7 100%);
+      --env-bg: #e8a5b8;
+      --env-flap: #d988a1;
+      --env-inner: #f7cad0;
+      --seal-bg: #b83b5e;
+      --seal-inner: #d63031;
+      --paper-bg: #fffdf9;
+      --text-color: #2c2225;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      overflow-x: hidden;
+      user-select: none;
+    }
+
+    /* Envelope Container Perspective */
+    .envelope-wrapper {
+      perspective: 1000px;
+    }
+
+    /* Envelope Styling */
+    .envelope {
+      width: 310px;
+      height: 210px;
+      position: relative;
+      background-color: var(--env-bg);
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(184, 59, 94, 0.25);
+      cursor: pointer;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    @media (min-width: 640px) {
+      .envelope {
+        width: 440px;
+        height: 290px;
+      }
+    }
+
+    .envelope:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 28px 50px rgba(184, 59, 94, 0.35);
+    }
+
+    /* Flaps */
+    .envelope .flap-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 0;
+      border-left: 155px solid transparent;
+      border-right: 155px solid transparent;
+      border-top: 125px solid var(--env-flap);
+      transform-origin: top;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.3s, z-index 0.2s 0.3s;
+      z-index: 5;
+    }
+
+    @media (min-width: 640px) {
+      .envelope .flap-top {
+        border-left-width: 220px;
+        border-right-width: 220px;
+        border-top-width: 170px;
+      }
+    }
+
+    .envelope .pocket-left {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 165px solid var(--env-bg);
+      border-top: 105px solid transparent;
+      border-bottom: 105px solid var(--env-bg);
+      border-radius: 12px 0 0 12px;
+      z-index: 3;
+      filter: brightness(0.96);
+    }
+
+    @media (min-width: 640px) {
+      .envelope .pocket-left {
+        border-left-width: 230px;
+        border-top-width: 145px;
+        border-bottom-width: 145px;
+      }
+    }
+
+    .envelope .pocket-right {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 0;
+      height: 0;
+      border-right: 165px solid var(--env-bg);
+      border-top: 105px solid transparent;
+      border-bottom: 105px solid var(--env-bg);
+      border-radius: 0 12px 12px 0;
+      z-index: 3;
+      filter: brightness(0.93);
+    }
+
+    @media (min-width: 640px) {
+      .envelope .pocket-right {
+        border-right-width: 230px;
+        border-top-width: 145px;
+        border-bottom-width: 145px;
+      }
+    }
+
+    .envelope .pocket-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 0;
+      border-left: 155px solid transparent;
+      border-right: 155px solid transparent;
+      border-bottom: 115px solid var(--env-bg);
+      border-radius: 0 0 12px 12px;
+      z-index: 4;
+      filter: brightness(0.98);
+    }
+
+    @media (min-width: 640px) {
+      .envelope .pocket-bottom {
+        border-left-width: 220px;
+        border-right-width: 220px;
+        border-bottom-width: 150px;
+      }
+    }
+
+    /* Wax Seal */
+    .wax-seal {
+      position: absolute;
+      top: 110px;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(1);
+      width: 58px;
+      height: 58px;
+      background: radial-gradient(circle, #e63946 0%, var(--seal-bg) 100%);
+      border-radius: 50%;
+      z-index: 6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35), inset 0 2px 4px rgba(255, 255, 255, 0.4);
+      transition: transform 0.4s ease, opacity 0.4s ease;
+      animation: pulse-glow 2.2s infinite ease-in-out;
+    }
+
+    @media (min-width: 640px) {
+      .wax-seal {
+        top: 150px;
+        width: 72px;
+        height: 72px;
+      }
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35), 0 0 0 0 rgba(230, 57, 70, 0.4);
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(1.08);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45), 0 0 0 14px rgba(230, 57, 70, 0);
+      }
+    }
+
+    /* Paper Peek inside Envelope */
+    .letter-paper-peek {
+      position: absolute;
+      bottom: 12px;
+      left: 6%;
+      width: 88%;
+      height: 82%;
+      background-color: var(--paper-bg);
+      border-radius: 6px;
+      z-index: 2;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Envelope Open Animations */
+    .envelope.open .flap-top {
+      transform: rotateX(180deg);
+      z-index: 1;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.1s 0.3s;
+    }
+
+    .envelope.open .wax-seal {
+      transform: translate(-50%, -50%) scale(0.1) rotate(45deg);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .envelope.open .letter-paper-peek {
+      transform: translateY(-80px);
+    }
+
+    /* Fullscreen Letter View Modal */
+    .letter-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem;
+      background: rgba(30, 15, 25, 0.55);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+
+    .letter-modal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .letter-card {
+      background-color: var(--paper-bg);
+      background-image: 
+        radial-gradient(#e0c3fc 0.75px, transparent 0.75px),
+        linear-gradient(to bottom, rgba(255, 245, 247, 0.8), rgba(255, 253, 249, 1));
+      background-size: 16px 16px, 100% 100%;
+      width: 100%;
+      max-width: 650px;
+      max-height: 88vh;
+      border-radius: 16px;
+      padding: 2.25rem 2rem;
+      box-shadow: 0 25px 60px -15px rgba(184, 59, 94, 0.4);
+      position: relative;
+      overflow-y: auto;
+      transform: translateY(35px) scale(0.92);
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      color: var(--text-color);
+      border: 1px solid rgba(225, 190, 231, 0.6);
+    }
+
+    @media (min-width: 640px) {
+      .letter-card {
+        padding: 3rem 2.75rem;
+      }
+    }
+
+    .letter-modal.active .letter-card {
+      transform: translateY(0) scale(1);
+    }
+
+    /* Scrollbar */
+    .letter-card::-webkit-scrollbar {
+      width: 5px;
+    }
+    .letter-card::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .letter-card::-webkit-scrollbar-thumb {
+      background: rgba(184, 59, 94, 0.2);
+      border-radius: 10px;
+    }
+
+    /* Stamp Effect */
+    .stamp {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      width: 58px;
+      height: 68px;
+      border: 2px dashed #d988a1;
+      padding: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: rotate(5deg);
+      opacity: 0.8;
+    }
+
+    .stamp-inner {
+      width: 100%;
+      height: 100%;
+      background: #fce4ec;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      color: #b83b5e;
+    }
+
+    /* Floating Particles Canvas */
+    #particle-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+  </style>
+</head>
+<body class="font-sans flex flex-col justify-between min-h-screen text-slate-800 relative">
+
+  <!-- Background Particle Canvas -->
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- Top Navigation / Controls -->
+  <header class="relative z-10 w-full px-6 py-4 flex justify-between items-center max-w-5xl mx-auto">
+    <div class="flex items-center space-x-2">
+      <span class="text-2xl text-rose-500 animate-pulse"><i class="fa-solid fa-heart"></i></span>
+      <span class="font-dancing text-2xl font-bold text-rose-800 tracking-wide">For you only</span>
+    </div>
+
+    <!-- Audio Toggle -->
+    <button id="audio-toggle" class="p-3 bg-white/80 backdrop-blur rounded-full shadow-md hover:shadow-lg transition transform hover:scale-105 text-rose-700" title="Toggle Sound">
+      <i class="fa-solid fa-volume-xmark text-lg" id="audio-icon"></i>
+    </button>
+  </header>
+
+  <!-- Main View -->
+  <main class="relative z-10 flex-1 flex flex-col items-center justify-center p-4">
+    
+    <!-- Title Prompt -->
+    <div class="text-center mb-8 max-w-lg px-2">
+      <h1 class="font-dancing text-4xl sm:text-5xl font-bold text-rose-900 mb-2 drop-shadow-sm">
+        For your eyes only
+      </h1>
+      <p class="text-sm sm:text-base text-rose-700 font-medium">
+        Tap the wax seal to open ✉️
+      </p>
+    </div>
+
+    <!-- Envelope -->
+    <div class="envelope-wrapper my-2">
+      <div id="envelope" class="envelope flex items-center justify-center">
+        <!-- Flap Top -->
+        <div class="flap-top"></div>
+        
+        <!-- Pockets -->
+        <div class="pocket-left"></div>
+        <div class="pocket-right"></div>
+        <div class="pocket-bottom"></div>
+
+        <!-- Wax Seal -->
+        <div id="wax-seal" class="wax-seal">
+          <span class="font-dancing text-white font-bold text-xl sm:text-2xl tracking-wider">S</span>
+        </div>
+
+        <!-- Mini Paper Peek -->
+        <div class="letter-paper-peek flex flex-col justify-between opacity-80">
+          <div class="w-20 h-2 bg-rose-200/80 rounded mb-2"></div>
+          <div class="space-y-1.5">
+            <div class="w-full h-1.5 bg-rose-200/50 rounded"></div>
+            <div class="w-5/6 h-1.5 bg-rose-200/50 rounded"></div>
+            <div class="w-4/6 h-1.5 bg-rose-200/50 rounded"></div>
+          </div>
+          <div class="w-12 h-2 bg-rose-300/80 rounded self-end"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive Prompt Button -->
+    <div class="mt-8 text-center">
+      <button id="open-btn" class="px-7 py-3 bg-white/90 hover:bg-white text-rose-600 rounded-full font-semibold shadow-md hover:shadow-lg transition duration-300 flex items-center space-x-2.5 mx-auto text-sm sm:text-base border border-rose-100">
+        <i class="fa-solid fa-envelope-open text-rose-400"></i>
+        <span>Tap to open letter</span>
+      </button>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="relative z-10 py-4 text-center text-xs text-rose-700/60 font-medium">
+    <p>Made by Gen • Tap anytime to re-read</p>
+  </footer>
+
+  <!-- Fullscreen Letter Modal -->
+  <div id="letter-modal" class="letter-modal">
+    <div class="letter-card">
+      
+      <!-- Stamp -->
+      <div class="stamp hidden sm:flex">
+        <div class="stamp-inner">
+          <i class="fa-solid fa-heart"></i>
+        </div>
+      </div>
+
+      <!-- Close Button -->
+      <button id="close-letter-btn" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 w-9 h-9 flex items-center justify-center rounded-full hover:bg-rose-50 transition">
+        <i class="fa-solid fa-xmark text-xl"></i>
+      </button>
+
+      <!-- Letter Body -->
+      <div class="letter-content pt-2 sm:pt-4">
+        
+        <!-- Recipient -->
+        <div class="mb-6">
+          <span class="font-dancing text-3xl sm:text-4xl font-bold text-rose-900 border-b-2 border-rose-200/80 pb-1 inline-block">
+            To Samantha,
+          </span>
+        </div>
+
+        <!-- Exact Letter Text -->
+        <div class="font-caveat text-2xl sm:text-3xl leading-relaxed text-slate-800 space-y-4 my-6">
+          <p>
+            I wanted to take a moment to write this note to let you know how truly sorry I am for ignoring you these past few days. I'm not mad at you or anything I just don't want to cause any trouble to your life right now that's why I've been avoiding you. We're still okay, right? Kung hindi iiyak talaga ako at luluhod sa harap mo.
+          </p>
+          <p>
+            If you have any problems, I'm still here, just hit me up and I'll be there. Miss you 'as a friend' HAHAHA
+          </p>
+        </div>
+
+        <!-- Sender Sign-off -->
+        <div class="mt-8 text-right pr-2 sm:pr-6">
+          <span class="font-dancing text-4xl sm:text-5xl text-rose-600 font-bold block">
+            Gen
+          </span>
+        </div>
+      </div>
+
+      <!-- Re-seal Button -->
+      <div class="mt-10 pt-4 border-t border-rose-100 flex justify-center">
+        <button id="re-fold-btn" class="px-6 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-full text-sm font-semibold transition flex items-center space-x-2 shadow-sm">
+          <i class="fa-solid fa-rotate-left text-xs"></i>
+          <span>Re-seal Envelope</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- JavaScript Logic -->
+  <script>
+    let isEnvelopeOpen = false;
+    let audioContext = null;
+    let isMuted = true;
+
+    const envelope = document.getElementById('envelope');
+    const openBtn = document.getElementById('open-btn');
+    const letterModal = document.getElementById('letter-modal');
+    const closeLetterBtn = document.getElementById('close-letter-btn');
+    const reFoldBtn = document.getElementById('re-fold-btn');
+    const audioToggle = document.getElementById('audio-toggle');
+    const audioIcon = document.getElementById('audio-icon');
+
+    // Web Audio Synthesizer
+    function initAudio() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playUnsealSound() {
+      if (isMuted) return;
+      initAudio();
+
+      try {
+        const now = audioContext.currentTime;
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(320, now);
+        osc.frequency.exponentialRampToValueAtTime(640, now + 0.45);
+
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.45);
+      } catch (e) {
+        console.log('Audio playback context', e);
+      }
+    }
+
+    function toggleAudio() {
+      initAudio();
+      isMuted = !isMuted;
+
+      if (isMuted) {
+        audioIcon.className = 'fa-solid fa-volume-xmark text-lg';
+      } else {
+        audioIcon.className = 'fa-solid fa-volume-high text-lg text-rose-500';
+        playAmbientTone();
+      }
+    }
+
+    function playAmbientTone() {
+      if (isMuted || !audioContext) return;
+      const now = audioContext.currentTime;
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(523.25, now); // Sweet C5 note
+
+      gain.gain.setValueAtTime(0.03, now);
+      gain.gain.linearRampToValueAtTime(0.001, now + 2.5);
+
+      osc.connect(gain);
+      gain.connect(audioContext.destination);
+
+      osc.start(now);
+      osc.stop(now + 2.5);
+    }
+
+    // Floating Hearts & Sparkles Canvas Background
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+      constructor(x, y, isBurst = false) {
+        this.x = x || Math.random() * canvas.width;
+        this.y = y || Math.random() * canvas.height;
+        this.size = Math.random() * 7 + 4;
+        this.speedX = isBurst ? (Math.random() - 0.5) * 7 : (Math.random() - 0.5) * 1.2;
+        this.speedY = isBurst ? (Math.random() - 0.5) * 7 : -Math.random() * 1.2 - 0.4;
+        this.opacity = isBurst ? 1 : Math.random() * 0.5 + 0.2;
+        this.color = ['#ff758c', '#e84393', '#fd79a8', '#fecfef', '#b83b5e'][Math.floor(Math.random() * 5)];
+        this.isHeart = Math.random() > 0.25;
+        this.rotation = Math.random() * Math.PI * 2;
+        this.isBurst = isBurst;
+        this.life = isBurst ? 90 : Infinity;
+      }
+
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.rotation += 0.015;
+
+        if (this.isBurst) {
+          this.life -= 1.6;
+          this.opacity = Math.max(0, this.life / 90);
+        } else {
+          if (this.y < -20) {
+            this.y = canvas.height + 20;
+            this.x = Math.random() * canvas.width;
+          }
+        }
+      }
+
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+        ctx.globalAlpha = this.opacity;
+        ctx.fillStyle = this.color;
+
+        if (this.isHeart) {
+          ctx.beginPath();
+          const topCurveHeight = this.size * 0.3;
+          ctx.moveTo(0, topCurveHeight);
+          ctx.bezierCurveTo(0, 0, -this.size / 2, 0, -this.size / 2, topCurveHeight);
+          ctx.bezierCurveTo(-this.size / 2, (this.size + topCurveHeight) / 2, 0, this.size, 0, this.size);
+          ctx.bezierCurveTo(0, this.size, this.size / 2, (this.size + topCurveHeight) / 2, this.size / 2, topCurveHeight);
+          ctx.bezierCurveTo(this.size / 2, 0, 0, 0, 0, topCurveHeight);
+          ctx.fill();
+        } else {
+          ctx.beginPath();
+          ctx.arc(0, 0, this.size / 2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        ctx.restore();
+      }
+    }
+
+    function initParticles() {
+      particles = [];
+      const count = window.innerWidth < 640 ? 25 : 40;
+      for (let i = 0; i < count; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    function triggerHeartBurst() {
+      const rect = envelope.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      for (let i = 0; i < 35; i++) {
+        particles.push(new Particle(centerX, centerY, true));
+      }
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        particles[i].update();
+        particles[i].draw();
+
+        if (particles[i].isBurst && particles[i].life <= 0) {
+          particles.splice(i, 1);
+        }
+      }
+
+      requestAnimationFrame(animateParticles);
+    }
+
+    initParticles();
+    animateParticles();
+
+    // Envelope Flow Logic
+    function openEnvelope() {
+      if (isEnvelopeOpen) {
+        showLetterModal();
+        return;
+      }
+
+      isEnvelopeOpen = true;
+      playUnsealSound();
+      envelope.classList.add('open');
+
+      triggerHeartBurst();
+
+      setTimeout(() => {
+        showLetterModal();
+      }, 850);
+    }
+
+    function closeEnvelope() {
+      hideLetterModal();
+      setTimeout(() => {
+        envelope.classList.remove('open');
+        isEnvelopeOpen = false;
+      }, 350);
+    }
+
+    function showLetterModal() {
+      letterModal.classList.add('active');
+    }
+
+    function hideLetterModal() {
+      letterModal.classList.remove('active');
+    }
+
+    // Event Listeners
+    envelope.addEventListener('click', openEnvelope);
+    openBtn.addEventListener('click', openEnvelope);
+    closeLetterBtn.addEventListener('click', hideLetterModal);
+    reFoldBtn.addEventListener('click', closeEnvelope);
+    audioToggle.addEventListener('click', toggleAudio);
+  </script>
+</body>
+</html>
