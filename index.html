@@ -312,12 +312,13 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 1.25rem;
-      background: rgba(30, 15, 25, 0.55);
+      padding: 1rem;
+      background: rgba(30, 15, 25, 0.65);
       backdrop-filter: blur(8px);
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.5s ease;
+      overflow-y: auto;
     }
 
     .letter-modal.active {
@@ -332,17 +333,14 @@
         linear-gradient(to bottom, rgba(255, 245, 247, 0.8), rgba(255, 253, 249, 1));
       background-size: 16px 16px, 100% 100%;
       width: 100%;
-      max-width: 650px;
-      max-height: 88vh;
-      border-radius: 16px;
+      border-radius: 20px;
       padding: 2.25rem 2rem;
       box-shadow: 0 25px 60px -15px rgba(184, 59, 94, 0.4);
       position: relative;
-      overflow-y: auto;
-      transform: translateY(35px) scale(0.92);
-      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
       color: var(--text-color);
       border: 1px solid rgba(225, 190, 231, 0.6);
+      transform: translateY(35px) scale(0.92);
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     @media (min-width: 640px) {
@@ -355,58 +353,23 @@
       transform: translateY(0) scale(1);
     }
 
-    /* Scrollbar */
-    .letter-card::-webkit-scrollbar {
-      width: 5px;
-    }
-    .letter-card::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    .letter-card::-webkit-scrollbar-thumb {
-      background: rgba(184, 59, 94, 0.2);
-      border-radius: 10px;
-    }
-
-    /* Stamp Effect */
-    .stamp {
-      position: absolute;
-      top: 24px;
-      right: 24px;
-      width: 58px;
-      height: 68px;
-      border: 2px dashed #d988a1;
-      padding: 3px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transform: rotate(5deg);
-      opacity: 0.8;
-    }
-
-    .stamp-inner {
-      width: 100%;
-      height: 100%;
-      background: #fce4ec;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-      color: #b83b5e;
-    }
-
     /* Flower Item Styling */
-    .flower-card {
+    .flower-item {
       transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    .flower-card:hover {
-      transform: translateY(-6px) scale(1.05);
+    .flower-item:hover {
+      transform: translateY(-8px) scale(1.1);
     }
 
-    .flower-card.selected {
-      border-color: #f43f5e;
-      background-color: #fff1f2;
-      box-shadow: 0 10px 20px rgba(244, 63, 94, 0.2);
+    .flower-item.picked {
+      animation: pick-pop 0.4s forwards ease-out;
+    }
+
+    @keyframes pick-pop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.3) rotate(10deg); }
+      100% { transform: scale(0.9); filter: drop-shadow(0 0 8px rgba(244, 63, 94, 0.6)); }
     }
 
     /* Floating Particles Canvas */
@@ -426,28 +389,28 @@
   <!-- Background Particle Canvas -->
   <canvas id="particle-canvas"></canvas>
 
-  <!-- Top Navigation & Progress Bar -->
+  <!-- Top Navigation & Step Indicator -->
   <header class="relative z-10 w-full px-6 py-4 flex flex-col sm:flex-row justify-between items-center max-w-5xl mx-auto gap-4">
     <div class="flex items-center space-x-2">
       <span class="text-2xl text-rose-500 animate-pulse"><i class="fa-solid fa-heart"></i></span>
-      <span class="font-dancing text-2xl sm:text-3xl font-bold text-rose-800 tracking-wide">A Surprise For You</span>
+      <span class="font-dancing text-2xl sm:text-3xl font-bold text-rose-800 tracking-wide">Birthday Celebration</span>
     </div>
 
-    <!-- Sequence Indicators -->
+    <!-- Sequence Progress Indicators -->
     <div class="flex items-center space-x-2 bg-white/70 backdrop-blur px-4 py-2 rounded-full shadow-sm border border-rose-100 text-xs sm:text-sm">
       <div id="step-indicator-1" class="flex items-center space-x-1 font-semibold text-rose-600 transition-colors">
         <span class="w-6 h-6 rounded-full bg-rose-500 text-white flex items-center justify-center text-xs">1</span>
-        <span>Wish</span>
+        <span>Wish & Cake</span>
       </div>
       <span class="text-slate-300"><i class="fa-solid fa-chevron-right text-xs"></i></span>
       <div id="step-indicator-2" class="flex items-center space-x-1 font-semibold text-slate-400 transition-colors">
         <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs">2</span>
-        <span>Flowers</span>
+        <span>Pick Flowers</span>
       </div>
       <span class="text-slate-300"><i class="fa-solid fa-chevron-right text-xs"></i></span>
       <div id="step-indicator-3" class="flex items-center space-x-1 font-semibold text-slate-400 transition-colors">
         <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs">3</span>
-        <span>Letter</span>
+        <span>Open Letter</span>
       </div>
     </div>
 
@@ -467,7 +430,7 @@
           Make a Birthday Wish!
         </h1>
         <p class="text-sm sm:text-base text-rose-700 font-medium">
-          Tap on the candle flames to blow them out ✨
+          Tap on the candles to blow out the flames 🎂
         </p>
       </div>
 
@@ -525,62 +488,54 @@
         </div>
       </div>
 
-      <!-- Action Button -->
-      <div class="mt-8 text-center">
-        <button id="blow-all-btn" onclick="extinguishAllCandles()" class="px-6 py-2.5 bg-white/90 hover:bg-white text-rose-600 rounded-full font-semibold shadow-md hover:shadow-lg transition duration-300 text-sm sm:text-base border border-rose-100 mr-2">
+      <!-- Action Controls -->
+      <div class="mt-8 text-center flex flex-wrap justify-center gap-3">
+        <button id="blow-all-btn" onclick="extinguishAllCandles()" class="px-6 py-2.5 bg-white/90 hover:bg-white text-rose-600 rounded-full font-semibold shadow-md hover:shadow-lg transition duration-300 text-sm sm:text-base border border-rose-100">
           <i class="fa-solid fa-wind mr-1.5 text-rose-400"></i> Blow Out All Candles
         </button>
         <button id="next-to-flowers-btn" onclick="goToStep(2)" class="px-7 py-3 bg-rose-500 hover:bg-rose-600 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition duration-300 hidden text-sm sm:text-base animate-bounce">
-          <span>Collect Flowers</span> <i class="fa-solid fa-arrow-right ml-2"></i>
+          <span>Next: Pick Your Flowers</span> <i class="fa-solid fa-arrow-right ml-2"></i>
         </button>
       </div>
     </section>
 
-    <!-- STEP 2: Flowers Bouquet Section -->
+    <!-- STEP 2: Flower Picking Garden Section -->
     <section id="step-2" class="step-section">
-      <div class="text-center mb-6 max-w-lg px-2">
+      <div class="text-center mb-4 max-w-lg px-2">
         <h1 class="font-dancing text-4xl sm:text-5xl font-bold text-rose-900 mb-2 drop-shadow-sm">
-          Pick Your Bouquet
+          Pick Your Birthday Flowers
         </h1>
         <p class="text-sm sm:text-base text-rose-700 font-medium">
-          Choose a lovely floral arrangement to assemble your gift 💐
+          Tap individual flowers to gather your personalized bouquet 💐
         </p>
       </div>
 
-      <!-- Flower Cards Selection Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-2xl px-2 my-2">
-        <!-- Bouquet 1 -->
-        <div class="flower-card cursor-pointer bg-white/90 backdrop-blur rounded-2xl p-4 border-2 border-transparent text-center flex flex-col items-center" onclick="selectFlower(this, 'Romantic Roses')">
-          <div class="w-20 h-20 bg-rose-100 rounded-full flex items-center justify-center text-4xl text-rose-500 mb-3 shadow-inner">
-            🌹
-          </div>
-          <h3 class="font-bold text-slate-800 text-base mb-1">Classic Roses</h3>
-          <p class="text-xs text-slate-500">Deep love and warm affection</p>
+      <!-- Flower Garden Grid -->
+      <div class="bg-white/70 backdrop-blur rounded-3xl p-6 shadow-xl border border-rose-100 w-full max-w-xl my-2">
+        <div class="grid grid-cols-4 gap-4 sm:gap-6 justify-items-center">
+          <button class="flower-item text-4xl sm:text-5xl p-2 rounded-2xl hover:bg-rose-50" onclick="pickFlower(this, '🌹')">🌹</button>
+          <button class="flower-item text-4xl sm:text-5xl p-2 rounded-2xl hover:bg-rose-50" onclick="pickFlower(this, '🌷')">🌷</button>
+          <button class="flower-item text-4xl sm:text-5xl p-2 rounded-2xl hover:bg-rose-50" onclick="pickFlower(this, '🌻')">🌻</button>
+          <button class="flower-item text-4xl sm:text-5xl p-2 rounded-2xl hover:bg-rose-50" onclick="pickFlower(this, '🌸')">🌸</button>
+          <button class="flower-item text-4xl sm:text-5xl p-2 rounded-2xl hover:bg-rose-50" onclick="pickFlower(this, '🌺')">🌺</button>
+          <button class="flower-item text-4xl sm:text-5xl p-2 rounded-2xl hover:bg-rose-50" onclick="pickFlower(this, '🌼')">🌼</button>
+          <button class="flower-item text-4xl sm:text-5xl p-2 rounded-2xl hover:bg-rose-50" onclick="pickFlower(this, '🪻')">🪻</button>
+          <button class="flower-item text-4xl sm:text-5xl p-2 rounded-2xl hover:bg-rose-50" onclick="pickFlower(this, '💐')">💐</button>
         </div>
 
-        <!-- Bouquet 2 -->
-        <div class="flower-card cursor-pointer bg-white/90 backdrop-blur rounded-2xl p-4 border-2 border-transparent text-center flex flex-col items-center" onclick="selectFlower(this, 'Blossom Tulips')">
-          <div class="w-20 h-20 bg-pink-100 rounded-full flex items-center justify-center text-4xl text-pink-500 mb-3 shadow-inner">
-            🌷
+        <!-- Collected Bouquet Preview Bar -->
+        <div class="mt-6 pt-4 border-t border-rose-100 text-center">
+          <span class="text-xs font-semibold uppercase tracking-wider text-rose-400 block mb-2">Your Collected Bouquet:</span>
+          <div id="collected-bouquet-display" class="min-h-[48px] bg-rose-50/80 rounded-2xl p-2 flex items-center justify-center space-x-2 text-2xl sm:text-3xl border border-rose-200/60">
+            <span class="text-xs text-slate-400 italic font-normal">Tap flowers above to add them here...</span>
           </div>
-          <h3 class="font-bold text-slate-800 text-base mb-1">Gentle Tulips</h3>
-          <p class="text-xs text-slate-500">Happiness, comfort and grace</p>
-        </div>
-
-        <!-- Bouquet 3 -->
-        <div class="flower-card cursor-pointer bg-white/90 backdrop-blur rounded-2xl p-4 border-2 border-transparent text-center flex flex-col items-center" onclick="selectFlower(this, 'Sunflowers & Lilies')">
-          <div class="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center text-4xl text-amber-500 mb-3 shadow-inner">
-            🌻
-          </div>
-          <h3 class="font-bold text-slate-800 text-base mb-1">Bright Sunflowers</h3>
-          <p class="text-xs text-slate-500">Joy, warmth and everlasting smile</p>
         </div>
       </div>
 
       <!-- Action Button -->
-      <div class="mt-8 text-center">
+      <div class="mt-6 text-center">
         <button id="next-to-letter-btn" onclick="goToStep(3)" class="px-8 py-3 bg-rose-500 hover:bg-rose-600 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition duration-300 text-sm sm:text-base opacity-50 cursor-not-allowed" disabled>
-          <span>Accept Flowers & Read Letter</span> <i class="fa-solid fa-envelope ml-2"></i>
+          <span>Next: Open Your Letter</span> <i class="fa-solid fa-envelope ml-2"></i>
         </button>
       </div>
     </section>
@@ -593,13 +548,13 @@
           For your eyes only
         </h1>
         <p class="text-sm sm:text-base text-rose-700 font-medium">
-          Tap the wax seal to open ✉️
+          Tap the wax seal to unseal and read ✉️
         </p>
       </div>
 
       <!-- Envelope -->
       <div class="envelope-wrapper my-2">
-        <div id="envelope" class="envelope flex items-center justify-center">
+        <div id="envelope" class="envelope flex items-center justify-center" onclick="openEnvelope()">
           <!-- Flap Top -->
           <div class="flap-top"></div>
           
@@ -628,7 +583,7 @@
 
       <!-- Interactive Prompt Button -->
       <div class="mt-8 text-center">
-        <button id="open-btn" class="px-7 py-3 bg-white/90 hover:bg-white text-rose-600 rounded-full font-semibold shadow-md hover:shadow-lg transition duration-300 flex items-center space-x-2.5 mx-auto text-sm sm:text-base border border-rose-100">
+        <button id="open-btn" onclick="openEnvelope()" class="px-7 py-3 bg-white/90 hover:bg-white text-rose-600 rounded-full font-semibold shadow-md hover:shadow-lg transition duration-300 flex items-center space-x-2.5 mx-auto text-sm sm:text-base border border-rose-100">
           <i class="fa-solid fa-envelope-open text-rose-400"></i>
           <span>Tap to open letter</span>
         </button>
@@ -639,59 +594,105 @@
 
   <!-- Footer -->
   <footer class="relative z-10 py-4 text-center text-xs text-rose-700/60 font-medium">
-    <p>Made with love ❤️ Tap anytime to celebrate again</p>
+    <p>Made with love ❤️ Tap anytime to re-read</p>
   </footer>
 
-  <!-- Fullscreen Letter Modal -->
+  <!-- Fullscreen Letter Modal with Displayed Cake & Flower Bouquet Beside It -->
   <div id="letter-modal" class="letter-modal">
-    <div class="letter-card">
+    <div class="w-full max-w-5xl my-auto py-6">
       
-      <!-- Stamp -->
-      <div class="stamp hidden sm:flex">
-        <div class="stamp-inner">
-          <i class="fa-solid fa-heart"></i>
-        </div>
-      </div>
+      <!-- Container Layout for Card + Side Displays -->
+      <div class="flex flex-col lg:flex-row items-center justify-center gap-6">
 
-      <!-- Close Button -->
-      <button id="close-letter-btn" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 w-9 h-9 flex items-center justify-center rounded-full hover:bg-rose-50 transition">
-        <i class="fa-solid fa-xmark text-xl"></i>
-      </button>
-
-      <!-- Letter Body -->
-      <div class="letter-content pt-2 sm:pt-4">
-        
-        <!-- Recipient -->
-        <div class="mb-6">
-          <span class="font-dancing text-3xl sm:text-4xl font-bold text-rose-900 border-b-2 border-rose-200/80 pb-1 inline-block">
-            Dear Friend,
-          </span>
-        </div>
-
-        <!-- Letter Content Text -->
-        <div class="font-caveat text-2xl sm:text-3xl leading-relaxed text-slate-800 space-y-4 my-6">
-          <p>
-            On this wonderful day, I want to wish you the happiest birthday filled with love, laughter, and infinite joy.
-          </p>
-          <p>
-            May all your wishes come true, and may the year ahead bring you countless moments of bliss, sweet memories, and success in everything you do!
-          </p>
+        <!-- DISPLAY BADGE 1: Birthday Cake (Displayed Beside Letter) -->
+        <div class="w-full lg:w-64 bg-white/95 backdrop-blur rounded-2xl p-4 shadow-xl border border-rose-100 flex flex-col items-center text-center shrink-0 order-2 lg:order-1">
+          <div class="text-xs font-bold uppercase tracking-wider text-rose-500 bg-rose-50 px-3 py-1 rounded-full mb-3 flex items-center space-x-1.5">
+            <span>🎂 Your Cake</span>
+          </div>
+          <!-- Miniature Cake Graphic -->
+          <div class="relative my-2 flex flex-col items-center transform scale-90">
+            <!-- Off Candles -->
+            <div class="flex justify-center space-x-4 mb-[-6px]">
+              <div class="w-2.5 h-8 bg-amber-200 rounded-t-sm opacity-80"></div>
+              <div class="w-2.5 h-9 bg-indigo-200 rounded-t-sm opacity-80"></div>
+              <div class="w-2.5 h-8 bg-pink-200 rounded-t-sm opacity-80"></div>
+            </div>
+            <div class="w-40 bg-gradient-to-r from-pink-300 via-rose-300 to-pink-300 h-10 rounded-xl flex items-center justify-center text-white font-dancing font-bold text-sm shadow">
+              Wishes Made! ✨
+            </div>
+            <div class="w-44 bg-amber-100 h-8 rounded-b-xl mt-0.5 border-t border-white"></div>
+          </div>
+          <p class="text-xs text-slate-500 mt-2 font-medium">Candles blown & wish sent! ✨</p>
         </div>
 
-        <!-- Sender Sign-off -->
-        <div class="mt-8 text-right pr-2 sm:pr-6">
-          <span class="font-dancing text-3xl sm:text-4xl text-rose-600 font-bold block">
-            With warmest wishes ❤️
-          </span>
-        </div>
-      </div>
+        <!-- MAIN LETTER CARD -->
+        <div class="letter-card max-w-2xl order-1 lg:order-2">
+          
+          <!-- Stamp -->
+          <div class="stamp hidden sm:flex">
+            <div class="stamp-inner">
+              <i class="fa-solid fa-heart"></i>
+            </div>
+          </div>
 
-      <!-- Re-seal Button -->
-      <div class="mt-10 pt-4 border-t border-rose-100 flex justify-center space-x-3">
-        <button id="re-fold-btn" class="px-6 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-full text-sm font-semibold transition flex items-center space-x-2 shadow-sm">
-          <i class="fa-solid fa-rotate-left text-xs"></i>
-          <span>Re-seal Envelope</span>
-        </button>
+          <!-- Close Button -->
+          <button id="close-letter-btn" onclick="hideLetterModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 w-9 h-9 flex items-center justify-center rounded-full hover:bg-rose-50 transition">
+            <i class="fa-solid fa-xmark text-xl"></i>
+          </button>
+
+          <!-- Letter Body -->
+          <div class="letter-content pt-2 sm:pt-4">
+            
+            <!-- Recipient -->
+            <div class="mb-6">
+              <span class="font-dancing text-3xl sm:text-4xl font-bold text-rose-900 border-b-2 border-rose-200/80 pb-1 inline-block">
+                Dear Friend,
+              </span>
+            </div>
+
+            <!-- Main Letter Text -->
+            <div class="font-caveat text-2xl sm:text-3xl leading-relaxed text-slate-800 space-y-4 my-6">
+              <p>
+                On this wonderful day, I want to wish you the happiest birthday filled with endless love, happiness, and sweet smiles.
+              </p>
+              <p>
+                May your special day bring you all the joy you share with others, and may the year ahead be bright, beautiful, and full of magical moments!
+              </p>
+            </div>
+
+            <!-- Sender Sign-off -->
+            <div class="mt-8 text-right pr-2 sm:pr-6">
+              <span class="font-dancing text-3xl sm:text-4xl text-rose-600 font-bold block">
+                With all my love ❤️
+              </span>
+            </div>
+          </div>
+
+          <!-- Re-seal & Action Controls -->
+          <div class="mt-8 pt-4 border-t border-rose-100 flex flex-wrap justify-center gap-3">
+            <button id="re-fold-btn" onclick="closeEnvelope()" class="px-5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-full text-xs sm:text-sm font-semibold transition flex items-center space-x-1.5 shadow-sm">
+              <i class="fa-solid fa-rotate-left"></i>
+              <span>Re-seal Envelope</span>
+            </button>
+            <button onclick="restartExperience()" class="px-5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full text-xs sm:text-sm font-semibold transition flex items-center space-x-1.5 shadow-sm">
+              <i class="fa-solid fa-arrows-rotate"></i>
+              <span>Start Over</span>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- DISPLAY BADGE 2: Picked Flower Bouquet (Displayed Beside Letter) -->
+        <div class="w-full lg:w-64 bg-white/95 backdrop-blur rounded-2xl p-4 shadow-xl border border-rose-100 flex flex-col items-center text-center shrink-0 order-3">
+          <div class="text-xs font-bold uppercase tracking-wider text-rose-500 bg-rose-50 px-3 py-1 rounded-full mb-3 flex items-center space-x-1.5">
+            <span>💐 Your Bouquet</span>
+          </div>
+          <div id="modal-bouquet-container" class="min-h-[60px] flex items-center justify-center flex-wrap gap-1 text-3xl my-2 p-3 bg-rose-50/50 rounded-2xl w-full border border-rose-100">
+            💐
+          </div>
+          <p id="modal-bouquet-text" class="text-xs text-slate-500 mt-1 font-medium">Gathered specially for you!</p>
+        </div>
+
       </div>
 
     </div>
@@ -704,17 +705,14 @@
     let isEnvelopeOpen = false;
     let audioContext = null;
     let isMuted = true;
-    let selectedBouquet = null;
+    let collectedFlowers = [];
 
     const envelope = document.getElementById('envelope');
-    const openBtn = document.getElementById('open-btn');
     const letterModal = document.getElementById('letter-modal');
-    const closeLetterBtn = document.getElementById('close-letter-btn');
-    const reFoldBtn = document.getElementById('re-fold-btn');
     const audioToggle = document.getElementById('audio-toggle');
     const audioIcon = document.getElementById('audio-icon');
 
-    // Audio Synthesizer Controls
+    // Web Audio Synthesizer Functions
     function initAudio() {
       if (!audioContext) {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -741,7 +739,7 @@
         osc.start(now);
         osc.stop(now + duration);
       } catch (e) {
-        console.log('Audio playback error', e);
+        console.log('Audio playback context', e);
       }
     }
 
@@ -766,7 +764,7 @@
         osc.start(now);
         osc.stop(now + 0.45);
       } catch (e) {
-        console.log('Audio playback error', e);
+        console.log('Audio error', e);
       }
     }
 
@@ -782,7 +780,7 @@
       }
     }
 
-    // Step Transition Controls
+    // Step Flow Controller
     function goToStep(step) {
       currentStep = step;
 
@@ -812,7 +810,7 @@
       playNote(440 + step * 100, 'sine', 0.2);
     }
 
-    // Candle Extinguish Logic
+    // Candle Blowing Logic
     function extinguishCandle(index) {
       if (!unlitCandles[index]) return;
       
@@ -820,7 +818,7 @@
       const flame = document.getElementById(`flame-${index}`);
       if (flame) flame.classList.add('extinguished');
 
-      playNote(300 - index * 40, 'triangle', 0.2);
+      playNote(300 - index * 40, 'triangle', 0.25);
       triggerBurstAtElement(flame);
 
       if (unlitCandles.every(c => !c)) {
@@ -837,25 +835,36 @@
       const nextBtn = document.getElementById('next-to-flowers-btn');
       nextBtn.classList.remove('hidden');
       triggerHeartBurst();
-      playNote(587.33, 'sine', 0.6); // High D note celebratory chime
+      playNote(587.33, 'sine', 0.6);
     }
 
-    // Flower Selection Logic
-    function selectFlower(element, bouquetName) {
-      document.querySelectorAll('.flower-card').forEach(card => card.classList.remove('selected'));
-      element.classList.add('selected');
-      selectedBouquet = bouquetName;
+    // Flower Gathering Logic
+    function pickFlower(button, emoji) {
+      button.classList.add('picked');
+      collectedFlowers.push(emoji);
 
+      playNote(400 + collectedFlowers.length * 60, 'sine', 0.25);
+      triggerBurstAtElement(button);
+
+      updateBouquetDisplay();
+    }
+
+    function updateBouquetDisplay() {
+      const container = document.getElementById('collected-bouquet-display');
+      const modalContainer = document.getElementById('modal-bouquet-container');
       const nextBtn = document.getElementById('next-to-letter-btn');
-      nextBtn.disabled = false;
-      nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-      nextBtn.classList.add('animate-pulse');
 
-      playNote(523.25, 'sine', 0.3);
-      triggerBurstAtElement(element);
+      if (collectedFlowers.length > 0) {
+        container.innerHTML = collectedFlowers.map(f => `<span class="animate-bounce inline-block">${f}</span>`).join(' ');
+        modalContainer.innerHTML = collectedFlowers.join(' ');
+
+        nextBtn.disabled = false;
+        nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        nextBtn.classList.add('animate-pulse');
+      }
     }
 
-    // Floating Hearts & Sparkles Canvas
+    // Floating Hearts & Sparkles Canvas Background
     const canvas = document.getElementById('particle-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
@@ -969,7 +978,7 @@
     initParticles();
     animateParticles();
 
-    // Envelope Flow Logic
+    // Envelope Flow Controls
     function openEnvelope() {
       if (isEnvelopeOpen) {
         showLetterModal();
@@ -1003,11 +1012,33 @@
       letterModal.classList.remove('active');
     }
 
+    function restartExperience() {
+      hideLetterModal();
+      unlitCandles = [true, true, true];
+      collectedFlowers = [];
+      
+      // Reset Candles
+      [0, 1, 2].forEach(i => {
+        const flame = document.getElementById(`flame-${i}`);
+        if (flame) flame.classList.remove('extinguished');
+      });
+      document.getElementById('blow-all-btn').classList.remove('hidden');
+      document.getElementById('next-to-flowers-btn').classList.add('hidden');
+
+      // Reset Flower Buttons
+      document.querySelectorAll('.flower-item').forEach(btn => btn.classList.remove('picked'));
+      document.getElementById('collected-bouquet-display').innerHTML = '<span class="text-xs text-slate-400 italic font-normal">Tap flowers above to add them here...</span>';
+      
+      const nextLetterBtn = document.getElementById('next-to-letter-btn');
+      nextLetterBtn.disabled = true;
+      nextLetterBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      nextLetterBtn.classList.remove('animate-pulse');
+
+      closeEnvelope();
+      goToStep(1);
+    }
+
     // Event Listeners
-    envelope.addEventListener('click', openEnvelope);
-    openBtn.addEventListener('click', openEnvelope);
-    closeLetterBtn.addEventListener('click', hideLetterModal);
-    reFoldBtn.addEventListener('click', closeEnvelope);
     audioToggle.addEventListener('click', toggleAudio);
   </script>
 </body>
