@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A Special Surprise For You</title>
+  <title>For your eyes only</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome Icons -->
@@ -30,10 +30,9 @@
   <style>
     /* Custom Styling & Aesthetic Variables */
     :root {
-      --bg-gradient: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 50%, #e1bee7 100%);
+      --bg-gradient: linear-gradient(135deg, #fce4ec 0%, #fff3e0 50%, #f3e5f5 100%);
       --env-bg: #e8a5b8;
       --env-flap: #d988a1;
-      --env-inner: #f7cad0;
       --seal-bg: #b83b5e;
       --paper-bg: #fffdf9;
       --text-color: #2c2225;
@@ -70,7 +69,7 @@
       transform: translateY(0);
     }
 
-    /* Cake & Candle Animation Styling */
+    /* Candle Animation Styling */
     .flame {
       width: 14px;
       height: 22px;
@@ -114,6 +113,25 @@
     @keyframes smoke-rise {
       0% { opacity: 0.8; transform: translate(-50%, 0) scale(0.5); }
       100% { opacity: 0; transform: translate(-50%, -35px) scale(2); }
+    }
+
+    /* Sunflower Bouquet Interactive Element */
+    .sunflower-bouquet-container {
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .sunflower-bouquet-container:hover {
+      transform: translateY(-8px) scale(1.03);
+    }
+
+    .sunflower-bouquet-container.received {
+      animation: bouquet-receive-pop 0.6s forwards ease-out;
+    }
+
+    @keyframes bouquet-receive-pop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15) rotate(4deg); }
+      100% { transform: scale(1); }
     }
 
     /* Envelope Container Perspective */
@@ -329,8 +347,8 @@
     .letter-card {
       background-color: var(--paper-bg);
       background-image: 
-        radial-gradient(#e0c3fc 0.75px, transparent 0.75px),
-        linear-gradient(to bottom, rgba(255, 245, 247, 0.8), rgba(255, 253, 249, 1));
+        radial-gradient(#fde047 0.75px, transparent 0.75px),
+        linear-gradient(to bottom, rgba(255, 251, 235, 0.8), rgba(255, 253, 249, 1));
       background-size: 16px 16px, 100% 100%;
       width: 100%;
       border-radius: 20px;
@@ -338,7 +356,7 @@
       box-shadow: 0 25px 60px -15px rgba(184, 59, 94, 0.4);
       position: relative;
       color: var(--text-color);
-      border: 1px solid rgba(225, 190, 231, 0.6);
+      border: 1px solid rgba(253, 224, 71, 0.6);
       transform: translateY(35px) scale(0.92);
       transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
@@ -353,23 +371,30 @@
       transform: translateY(0) scale(1);
     }
 
-    /* Flower Item Styling */
-    .flower-item {
-      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    /* Stamp Effect */
+    .stamp {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      width: 58px;
+      height: 68px;
+      border: 2px dashed #f59e0b;
+      padding: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: rotate(5deg);
+      opacity: 0.85;
     }
 
-    .flower-item:hover {
-      transform: translateY(-8px) scale(1.1);
-    }
-
-    .flower-item.picked {
-      animation: pick-pop 0.4s forwards ease-out;
-    }
-
-    @keyframes pick-pop {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.3) rotate(10deg); }
-      100% { transform: scale(0.9); filter: drop-shadow(0 0 8px rgba(244, 63, 94, 0.6)); }
+    .stamp-inner {
+      width: 100%;
+      height: 100%;
+      background: #fef3c7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
     }
 
     /* Floating Particles Canvas */
@@ -389,29 +414,11 @@
   <!-- Background Particle Canvas -->
   <canvas id="particle-canvas"></canvas>
 
-  <!-- Top Navigation & Step Indicator -->
-  <header class="relative z-10 w-full px-6 py-4 flex flex-col sm:flex-row justify-between items-center max-w-5xl mx-auto gap-4">
+  <!-- Top Navigation Header -->
+  <header class="relative z-10 w-full px-6 py-4 flex justify-between items-center max-w-5xl mx-auto">
     <div class="flex items-center space-x-2">
-      <span class="text-2xl text-rose-500 animate-pulse"><i class="fa-solid fa-heart"></i></span>
-      <span class="font-dancing text-2xl sm:text-3xl font-bold text-rose-800 tracking-wide">Birthday Celebration</span>
-    </div>
-
-    <!-- Sequence Progress Indicators -->
-    <div class="flex items-center space-x-2 bg-white/70 backdrop-blur px-4 py-2 rounded-full shadow-sm border border-rose-100 text-xs sm:text-sm">
-      <div id="step-indicator-1" class="flex items-center space-x-1 font-semibold text-rose-600 transition-colors">
-        <span class="w-6 h-6 rounded-full bg-rose-500 text-white flex items-center justify-center text-xs">1</span>
-        <span>Wish & Cake</span>
-      </div>
-      <span class="text-slate-300"><i class="fa-solid fa-chevron-right text-xs"></i></span>
-      <div id="step-indicator-2" class="flex items-center space-x-1 font-semibold text-slate-400 transition-colors">
-        <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs">2</span>
-        <span>Pick Flowers</span>
-      </div>
-      <span class="text-slate-300"><i class="fa-solid fa-chevron-right text-xs"></i></span>
-      <div id="step-indicator-3" class="flex items-center space-x-1 font-semibold text-slate-400 transition-colors">
-        <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs">3</span>
-        <span>Open Letter</span>
-      </div>
+      <span class="text-2xl text-amber-500 animate-pulse"><i class="fa-solid fa-sun"></i></span>
+      <span class="font-dancing text-2xl sm:text-3xl font-bold text-rose-800 tracking-wide">Happy Birthday to you!</span>
     </div>
 
     <!-- Audio Toggle -->
@@ -430,7 +437,7 @@
           Make a Birthday Wish!
         </h1>
         <p class="text-sm sm:text-base text-rose-700 font-medium">
-          Tap on the candles to blow out the flames 🎂
+          Tap on the candles to blow out the glowing flames 🎂
         </p>
       </div>
 
@@ -452,7 +459,7 @@
               <div id="flame-1" class="flame"></div>
               <div class="smoke"></div>
             </div>
-            <div class="w-3.5 h-14 bg-gradient-to-r from-sky-200 via-indigo-300 to-sky-200 rounded-t-sm shadow-inner"></div>
+            <div class="w-3.5 h-14 bg-gradient-to-r from-yellow-200 via-amber-300 to-yellow-200 rounded-t-sm shadow-inner"></div>
           </div>
           <!-- Candle 3 -->
           <div class="candle-item cursor-pointer flex flex-col items-center group" onclick="extinguishCandle(2)">
@@ -464,22 +471,21 @@
           </div>
         </div>
 
-        <!-- Birthday Cake Representation -->
-        <div class="w-64 sm:w-80 bg-white rounded-3xl shadow-xl border-4 border-rose-200 p-4 relative overflow-hidden flex flex-col items-center">
-          <!-- Frosting Top Decor -->
+        <!-- Birthday Cake Graphic -->
+        <div class="w-64 sm:w-80 bg-white rounded-3xl shadow-xl border-4 border-amber-200 p-4 relative overflow-hidden flex flex-col items-center">
           <div class="w-full flex justify-around -mt-2 mb-2">
-            <span class="text-rose-400 text-xl"><i class="fa-solid fa-stroopwafel"></i></span>
+            <span class="text-amber-400 text-xl"><i class="fa-solid fa-sun"></i></span>
             <span class="text-pink-400 text-xl"><i class="fa-solid fa-heart"></i></span>
-            <span class="text-rose-400 text-xl"><i class="fa-solid fa-stroopwafel"></i></span>
+            <span class="text-amber-400 text-xl"><i class="fa-solid fa-sun"></i></span>
             <span class="text-pink-400 text-xl"><i class="fa-solid fa-heart"></i></span>
           </div>
-          <!-- Layer 1 -->
-          <div class="w-full h-16 bg-gradient-to-r from-pink-300 via-rose-300 to-pink-300 rounded-2xl flex items-center justify-center border-b-4 border-white shadow-inner">
+          <!-- Top Layer -->
+          <div class="w-full h-16 bg-gradient-to-r from-amber-300 via-rose-300 to-amber-300 rounded-2xl flex items-center justify-center border-b-4 border-white shadow-inner">
             <span class="font-dancing text-2xl font-bold text-white tracking-widest drop-shadow">Happy Birthday!</span>
           </div>
-          <!-- Layer 2 -->
+          <!-- Bottom Layer -->
           <div class="w-full h-12 bg-gradient-to-r from-amber-100 via-rose-100 to-amber-100 rounded-b-2xl mt-1 flex items-center justify-center">
-            <div class="flex space-x-3 text-rose-300 text-xs">
+            <div class="flex space-x-3 text-amber-500 text-xs">
               <i class="fa-solid fa-star"></i>
               <i class="fa-solid fa-sparkles"></i>
               <i class="fa-solid fa-star"></i>
@@ -490,51 +496,105 @@
 
       <!-- Action Controls -->
       <div class="mt-8 text-center flex flex-wrap justify-center gap-3">
-        <button id="blow-all-btn" onclick="extinguishAllCandles()" class="px-6 py-2.5 bg-white/90 hover:bg-white text-rose-600 rounded-full font-semibold shadow-md hover:shadow-lg transition duration-300 text-sm sm:text-base border border-rose-100">
-          <i class="fa-solid fa-wind mr-1.5 text-rose-400"></i> Blow Out All Candles
+        <button id="blow-all-btn" onclick="extinguishAllCandles()" class="px-6 py-2.5 bg-white/90 hover:bg-white text-rose-600 rounded-full font-semibold shadow-md hover:shadow-lg transition duration-300 text-sm sm:text-base border border-amber-100">
+          <i class="fa-solid fa-wind mr-1.5 text-amber-500"></i> Blow Out All Candles
         </button>
-        <button id="next-to-flowers-btn" onclick="goToStep(2)" class="px-7 py-3 bg-rose-500 hover:bg-rose-600 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition duration-300 hidden text-sm sm:text-base animate-bounce">
-          <span>Next: Pick Your Flowers</span> <i class="fa-solid fa-arrow-right ml-2"></i>
+        <button id="next-to-flowers-btn" onclick="goToStep(2)" class="px-7 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition duration-300 hidden text-sm sm:text-base animate-bounce">
+          <span>Receive Cake & Pick Sunflowers</span> <i class="fa-solid fa-arrow-right ml-2"></i>
         </button>
       </div>
     </section>
 
-    <!-- STEP 2: Flower Picking Garden Section -->
+    <!-- STEP 2: Sunflower Bouquet Section -->
     <section id="step-2" class="step-section">
       <div class="text-center mb-4 max-w-lg px-2">
-        <h1 class="font-dancing text-4xl sm:text-5xl font-bold text-rose-900 mb-2 drop-shadow-sm">
-          Pick Your Birthday Flowers
+        <h1 class="font-dancing text-4xl sm:text-5xl font-bold text-amber-900 mb-2 drop-shadow-sm">
+          A Radiant Sunflower Bouquet
         </h1>
-        <p class="text-sm sm:text-base text-rose-700 font-medium">
-          Tap individual flowers to gather your personalized bouquet 💐
+        <p class="text-sm sm:text-base text-amber-800 font-medium">
+          Tap the bouquet to collect your vibrant golden sunflowers 🌻
         </p>
       </div>
 
-      <!-- Flower Garden Grid -->
-      <div class="bg-white/70 backdrop-blur rounded-3xl p-6 shadow-xl border border-rose-100 w-full max-w-xl my-2">
-        <div class="grid grid-cols-4 gap-4 sm:gap-6 justify-items-center">
-          <button class="flower-item text-4xl sm:text-5xl p-2 rounded-2xl hover:bg-rose-50" onclick="pickFlower(this, '🌹')">🌹</button>
-          <button class="flower-item text-4xl sm:text-5xl p-2 rounded-2xl hover:bg-rose-50" onclick="pickFlower(this, '🌷')">🌷</button>
-          <button class="flower-item text-4xl sm:text-5xl p-2 rounded-2xl hover:bg-rose-50" onclick="pickFlower(this, '🌻')">🌻</button>
-          <button class="flower-item text-4xl sm:text-5xl p-2 rounded-2xl hover:bg-rose-50" onclick="pickFlower(this, '🌸')">🌸</button>
-          <button class="flower-item text-4xl sm:text-5xl p-2 rounded-2xl hover:bg-rose-50" onclick="pickFlower(this, '🌺')">🌺</button>
-          <button class="flower-item text-4xl sm:text-5xl p-2 rounded-2xl hover:bg-rose-50" onclick="pickFlower(this, '🌼')">🌼</button>
-          <button class="flower-item text-4xl sm:text-5xl p-2 rounded-2xl hover:bg-rose-50" onclick="pickFlower(this, '🪻')">🪻</button>
-          <button class="flower-item text-4xl sm:text-5xl p-2 rounded-2xl hover:bg-rose-50" onclick="pickFlower(this, '💐')">💐</button>
+      <!-- Beautifully Crafted Sunflower Bouquet Card -->
+      <div id="sunflower-card" onclick="receiveSunflowerBouquet()" class="sunflower-bouquet-container cursor-pointer bg-white/80 backdrop-blur rounded-3xl p-6 sm:p-8 shadow-2xl border-2 border-amber-200 w-full max-w-md my-2 flex flex-col items-center text-center relative overflow-hidden group">
+        
+        <!-- Radiant Background Glow -->
+        <div class="absolute inset-0 bg-radial from-amber-200/40 via-transparent to-transparent opacity-60"></div>
+
+        <!-- Sunflower SVG Bouquet Graphic -->
+        <div class="relative my-2 z-10 transform group-hover:scale-105 transition-transform duration-300">
+          <svg width="220" height="200" viewBox="0 0 220 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Bouquet Kraft Paper Wrapping & Ribbons -->
+            <path d="M70 120 L110 190 L150 120 Z" fill="#D7CCC8" stroke="#8D6E63" stroke-width="2"/>
+            <path d="M60 110 C80 140, 140 140, 160 110 L140 185 L100 185 Z" fill="#E0D5D0"/>
+            <path d="M100 155 C110 150, 120 150, 130 155 C125 165, 105 165, 100 155 Z" fill="#D81B60"/>
+            <!-- Leaves -->
+            <path d="M55 105 Q30 80 60 70 Q75 90 55 105 Z" fill="#4CAF50"/>
+            <path d="M165 105 Q190 80 160 70 Q145 90 165 105 Z" fill="#388E3C"/>
+            
+            <!-- Sunflower 1 (Left) -->
+            <g transform="translate(65, 75)">
+              <!-- Petals -->
+              <g fill="#FFCA28">
+                <ellipse cx="0" cy="-25" rx="6" ry="16" />
+                <ellipse cx="0" cy="25" rx="6" ry="16" />
+                <ellipse cx="-25" cy="0" rx="16" ry="6" />
+                <ellipse cx="25" cy="0" rx="16" ry="6" />
+                <ellipse cx="-18" cy="-18" rx="7" ry="16" transform="rotate(-45 -18 -18)" />
+                <ellipse cx="18" cy="18" rx="7" ry="16" transform="rotate(-45 18 18)" />
+                <ellipse cx="-18" cy="18" rx="7" ry="16" transform="rotate(45 -18 18)" />
+                <ellipse cx="18" cy="-18" rx="7" ry="16" transform="rotate(45 18 -18)" />
+              </g>
+              <!-- Center -->
+              <circle cx="0" cy="0" r="14" fill="#5D4037" stroke="#3E2723" stroke-width="2"/>
+              <circle cx="0" cy="0" r="10" fill="#4E342E" stroke-dasharray="2,2" stroke="#FFB300"/>
+            </g>
+
+            <!-- Sunflower 2 (Right) -->
+            <g transform="translate(155, 75)">
+              <g fill="#FFCA28">
+                <ellipse cx="0" cy="-25" rx="6" ry="16" />
+                <ellipse cx="0" cy="25" rx="6" ry="16" />
+                <ellipse cx="-25" cy="0" rx="16" ry="6" />
+                <ellipse cx="25" cy="0" rx="16" ry="6" />
+                <ellipse cx="-18" cy="-18" rx="7" ry="16" transform="rotate(-45 -18 -18)" />
+                <ellipse cx="18" cy="18" rx="7" ry="16" transform="rotate(-45 18 18)" />
+                <ellipse cx="-18" cy="18" rx="7" ry="16" transform="rotate(45 -18 18)" />
+                <ellipse cx="18" cy="-18" rx="7" ry="16" transform="rotate(45 18 -18)" />
+              </g>
+              <circle cx="0" cy="0" r="14" fill="#5D4037" stroke="#3E2723" stroke-width="2"/>
+              <circle cx="0" cy="0" r="10" fill="#4E342E" stroke-dasharray="2,2" stroke="#FFB300"/>
+            </g>
+
+            <!-- Sunflower 3 (Center Main Big Sunflower) -->
+            <g transform="translate(110, 50)">
+              <g fill="#FFB300">
+                <ellipse cx="0" cy="-32" rx="8" ry="20" />
+                <ellipse cx="0" cy="32" rx="8" ry="20" />
+                <ellipse cx="-32" cy="0" rx="20" ry="8" />
+                <ellipse cx="32" cy="0" rx="20" ry="8" />
+                <ellipse cx="-22" cy="-22" rx="9" ry="20" transform="rotate(-45 -22 -22)" />
+                <ellipse cx="22" cy="22" rx="9" ry="20" transform="rotate(-45 22 22)" />
+                <ellipse cx="-22" cy="22" rx="9" ry="20" transform="rotate(45 -22 22)" />
+                <ellipse cx="22" cy="-22" rx="9" ry="20" transform="rotate(45 22 -22)" />
+              </g>
+              <circle cx="0" cy="0" r="18" fill="#4E342E" stroke="#3E2723" stroke-width="2"/>
+              <circle cx="0" cy="0" r="13" fill="#3E2723" stroke-dasharray="3,3" stroke="#FFCA28"/>
+            </g>
+          </svg>
         </div>
 
-        <!-- Collected Bouquet Preview Bar -->
-        <div class="mt-6 pt-4 border-t border-rose-100 text-center">
-          <span class="text-xs font-semibold uppercase tracking-wider text-rose-400 block mb-2">Your Collected Bouquet:</span>
-          <div id="collected-bouquet-display" class="min-h-[48px] bg-rose-50/80 rounded-2xl p-2 flex items-center justify-center space-x-2 text-2xl sm:text-3xl border border-rose-200/60">
-            <span class="text-xs text-slate-400 italic font-normal">Tap flowers above to add them here...</span>
-          </div>
-        </div>
+        <h3 class="font-dancing text-2xl font-bold text-amber-900 mt-2">Golden Sunflower Bouquet</h3>
+        <p class="text-xs sm:text-sm text-amber-700 font-medium mt-1">Symbolizing warmth, happiness, and bright smiles. In short, You 🌻</p>
+        <span id="sunflower-status-badge" class="mt-4 inline-block bg-amber-100 text-amber-800 text-xs px-4 py-1.5 rounded-full font-semibold border border-amber-300">
+          Tap to receive bouquet ✨
+        </span>
       </div>
 
       <!-- Action Button -->
       <div class="mt-6 text-center">
-        <button id="next-to-letter-btn" onclick="goToStep(3)" class="px-8 py-3 bg-rose-500 hover:bg-rose-600 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition duration-300 text-sm sm:text-base opacity-50 cursor-not-allowed" disabled>
+        <button id="next-to-letter-btn" onclick="goToStep(3)" class="px-8 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition duration-300 text-sm sm:text-base opacity-50 cursor-not-allowed" disabled>
           <span>Next: Open Your Letter</span> <i class="fa-solid fa-envelope ml-2"></i>
         </button>
       </div>
@@ -542,23 +602,19 @@
 
     <!-- STEP 3: Envelope & Letter Section -->
     <section id="step-3" class="step-section">
-      <!-- Title Prompt -->
       <div class="text-center mb-8 max-w-lg px-2">
         <h1 class="font-dancing text-4xl sm:text-5xl font-bold text-rose-900 mb-2 drop-shadow-sm">
           For your eyes only
         </h1>
         <p class="text-sm sm:text-base text-rose-700 font-medium">
-          Tap the wax seal to unseal and read ✉️
+          Tap the wax seal to open ✉️
         </p>
       </div>
 
       <!-- Envelope -->
       <div class="envelope-wrapper my-2">
         <div id="envelope" class="envelope flex items-center justify-center" onclick="openEnvelope()">
-          <!-- Flap Top -->
           <div class="flap-top"></div>
-          
-          <!-- Pockets -->
           <div class="pocket-left"></div>
           <div class="pocket-right"></div>
           <div class="pocket-bottom"></div>
@@ -570,7 +626,7 @@
 
           <!-- Mini Paper Peek -->
           <div class="letter-paper-peek flex flex-col justify-between opacity-80">
-            <div class="w-20 h-2 bg-rose-200/80 rounded mb-2"></div>
+            <div class="w-20 h-2 bg-amber-200/80 rounded mb-2"></div>
             <div class="space-y-1.5">
               <div class="w-full h-1.5 bg-rose-200/50 rounded"></div>
               <div class="w-5/6 h-1.5 bg-rose-200/50 rounded"></div>
@@ -583,7 +639,7 @@
 
       <!-- Interactive Prompt Button -->
       <div class="mt-8 text-center">
-        <button id="open-btn" onclick="openEnvelope()" class="px-7 py-3 bg-white/90 hover:bg-white text-rose-600 rounded-full font-semibold shadow-md hover:shadow-lg transition duration-300 flex items-center space-x-2.5 mx-auto text-sm sm:text-base border border-rose-100">
+        <button id="open-btn" onclick="openEnvelope()" class="px-7 py-3 bg-white/90 hover:bg-white text-rose-600 rounded-full font-semibold shadow-md hover:shadow-lg transition duration-300 flex items-center space-x-2.5 mx-auto text-sm sm:text-base border border-amber-100">
           <i class="fa-solid fa-envelope-open text-rose-400"></i>
           <span>Tap to open letter</span>
         </button>
@@ -593,36 +649,47 @@
   </main>
 
   <!-- Footer -->
-  <footer class="relative z-10 py-4 text-center text-xs text-rose-700/60 font-medium">
-    <p>Made with love ❤️ Tap anytime to re-read</p>
+  <footer class="relative z-10 py-4 text-center text-xs text-amber-800/60 font-medium">
+    <p>Made by me ofc :P ❤️ Tap anytime to re-read</p>
   </footer>
 
-  <!-- Fullscreen Letter Modal with Displayed Cake & Flower Bouquet Beside It -->
+  <!-- Fullscreen Letter Modal with Side Keepsake Display Shelf -->
   <div id="letter-modal" class="letter-modal">
     <div class="w-full max-w-5xl my-auto py-6">
       
       <!-- Container Layout for Card + Side Displays -->
       <div class="flex flex-col lg:flex-row items-center justify-center gap-6">
 
-        <!-- DISPLAY BADGE 1: Birthday Cake (Displayed Beside Letter) -->
-        <div class="w-full lg:w-64 bg-white/95 backdrop-blur rounded-2xl p-4 shadow-xl border border-rose-100 flex flex-col items-center text-center shrink-0 order-2 lg:order-1">
-          <div class="text-xs font-bold uppercase tracking-wider text-rose-500 bg-rose-50 px-3 py-1 rounded-full mb-3 flex items-center space-x-1.5">
-            <span>🎂 Your Cake</span>
+        <!-- KEEPSAKE SHELF (Left/Top): Received Cake & Sunflower Bouquet -->
+        <div class="w-full lg:w-72 bg-white/95 backdrop-blur rounded-2xl p-5 shadow-2xl border border-amber-200 flex flex-col items-center text-center shrink-0 order-2 lg:order-1">
+          <div class="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-100 px-3 py-1 rounded-full mb-4 flex items-center space-x-1.5 border border-amber-200">
+            <i class="fa-solid fa-gift text-amber-600"></i>
+            <span>Your Birthday Keepsakes</span>
           </div>
-          <!-- Miniature Cake Graphic -->
-          <div class="relative my-2 flex flex-col items-center transform scale-90">
-            <!-- Off Candles -->
-            <div class="flex justify-center space-x-4 mb-[-6px]">
-              <div class="w-2.5 h-8 bg-amber-200 rounded-t-sm opacity-80"></div>
-              <div class="w-2.5 h-9 bg-indigo-200 rounded-t-sm opacity-80"></div>
-              <div class="w-2.5 h-8 bg-pink-200 rounded-t-sm opacity-80"></div>
+
+          <div class="w-full space-y-4">
+            <!-- Keepsake 1: Received Birthday Cake -->
+            <div class="bg-amber-50/80 rounded-xl p-3 border border-amber-100 flex items-center space-x-3">
+              <div class="text-3xl bg-white p-2 rounded-xl shadow-sm">🎂</div>
+              <div class="text-left">
+                <span class="block text-xs font-bold text-amber-900">Birthday Cake</span>
+                <span class="text-[11px] text-amber-700">Ano wish mo? ✨</span>
+              </div>
             </div>
-            <div class="w-40 bg-gradient-to-r from-pink-300 via-rose-300 to-pink-300 h-10 rounded-xl flex items-center justify-center text-white font-dancing font-bold text-sm shadow">
-              Wishes Made! ✨
+
+            <!-- Keepsake 2: Received Sunflower Bouquet -->
+            <div class="bg-amber-50/80 rounded-xl p-3 border border-amber-100 flex items-center space-x-3">
+              <div class="text-3xl bg-white p-2 rounded-xl shadow-sm">🌻</div>
+              <div class="text-left">
+                <span class="block text-xs font-bold text-amber-900">Sunflower Bouquet</span>
+                <span class="text-[11px] text-amber-700">Idk what to get you so picked sunflowers 💐</span>
+              </div>
             </div>
-            <div class="w-44 bg-amber-100 h-8 rounded-b-xl mt-0.5 border-t border-white"></div>
           </div>
-          <p class="text-xs text-slate-500 mt-2 font-medium">Candles blown & wish sent! ✨</p>
+
+          <div class="mt-4 pt-3 border-t border-amber-100/80 w-full text-center">
+            <span class="text-[11px] text-slate-400 font-medium">Happy Birthday ❤️</span>
+          </div>
         </div>
 
         <!-- MAIN LETTER CARD -->
@@ -631,7 +698,7 @@
           <!-- Stamp -->
           <div class="stamp hidden sm:flex">
             <div class="stamp-inner">
-              <i class="fa-solid fa-heart"></i>
+              <i class="fa-solid fa-sun text-amber-500"></i>
             </div>
           </div>
 
@@ -645,31 +712,34 @@
             
             <!-- Recipient -->
             <div class="mb-6">
-              <span class="font-dancing text-3xl sm:text-4xl font-bold text-rose-900 border-b-2 border-rose-200/80 pb-1 inline-block">
-                Dear Friend,
+              <span class="font-dancing text-3xl sm:text-4xl font-bold text-rose-900 border-b-2 border-amber-200/80 pb-1 inline-block">
+                To Chiara,
               </span>
             </div>
 
             <!-- Main Letter Text -->
             <div class="font-caveat text-2xl sm:text-3xl leading-relaxed text-slate-800 space-y-4 my-6">
               <p>
-                On this wonderful day, I want to wish you the happiest birthday filled with endless love, happiness, and sweet smiles.
+                On this wonderful day, I want to wish you the happiest birthday filled with endless warmth, love, and sweet smiles.
               </p>
               <p>
-                May your special day bring you all the joy you share with others, and may the year ahead be bright, beautiful, and full of magical moments!
+                I've grown quite an interest with you and I'd like to get you know better by doing this. If you need someone just message me and I'll be there.
+              </p>
+              <p>
+                Just like these sunflowers, may your day be bright, golden, and full of joy. May the year ahead bring you all the happiness you truly deserve!
               </p>
             </div>
 
             <!-- Sender Sign-off -->
             <div class="mt-8 text-right pr-2 sm:pr-6">
-              <span class="font-dancing text-3xl sm:text-4xl text-rose-600 font-bold block">
-                With all my love ❤️
+              <span class="font-dancing text-3xl sm:text-4xl text-amber-600 font-bold block">
+                Gen 🌻
               </span>
             </div>
           </div>
 
           <!-- Re-seal & Action Controls -->
-          <div class="mt-8 pt-4 border-t border-rose-100 flex flex-wrap justify-center gap-3">
+          <div class="mt-8 pt-4 border-t border-amber-100 flex flex-wrap justify-center gap-3">
             <button id="re-fold-btn" onclick="closeEnvelope()" class="px-5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-full text-xs sm:text-sm font-semibold transition flex items-center space-x-1.5 shadow-sm">
               <i class="fa-solid fa-rotate-left"></i>
               <span>Re-seal Envelope</span>
@@ -682,17 +752,6 @@
 
         </div>
 
-        <!-- DISPLAY BADGE 2: Picked Flower Bouquet (Displayed Beside Letter) -->
-        <div class="w-full lg:w-64 bg-white/95 backdrop-blur rounded-2xl p-4 shadow-xl border border-rose-100 flex flex-col items-center text-center shrink-0 order-3">
-          <div class="text-xs font-bold uppercase tracking-wider text-rose-500 bg-rose-50 px-3 py-1 rounded-full mb-3 flex items-center space-x-1.5">
-            <span>💐 Your Bouquet</span>
-          </div>
-          <div id="modal-bouquet-container" class="min-h-[60px] flex items-center justify-center flex-wrap gap-1 text-3xl my-2 p-3 bg-rose-50/50 rounded-2xl w-full border border-rose-100">
-            💐
-          </div>
-          <p id="modal-bouquet-text" class="text-xs text-slate-500 mt-1 font-medium">Gathered specially for you!</p>
-        </div>
-
       </div>
 
     </div>
@@ -702,10 +761,10 @@
   <script>
     let currentStep = 1;
     let unlitCandles = [true, true, true];
+    let isBouquetReceived = false;
     let isEnvelopeOpen = false;
     let audioContext = null;
     let isMuted = true;
-    let collectedFlowers = [];
 
     const envelope = document.getElementById('envelope');
     const letterModal = document.getElementById('letter-modal');
@@ -739,7 +798,7 @@
         osc.start(now);
         osc.stop(now + duration);
       } catch (e) {
-        console.log('Audio playback context', e);
+        console.log('Audio error', e);
       }
     }
 
@@ -775,12 +834,12 @@
       if (isMuted) {
         audioIcon.className = 'fa-solid fa-volume-xmark text-lg';
       } else {
-        audioIcon.className = 'fa-solid fa-volume-high text-lg text-rose-500';
+        audioIcon.className = 'fa-solid fa-volume-high text-lg text-amber-500';
         playNote(523.25, 'triangle', 0.5);
       }
     }
 
-    // Step Flow Controller
+    // Step Controller
     function goToStep(step) {
       currentStep = step;
 
@@ -792,22 +851,7 @@
         }
       });
 
-      // Update Header Step Indicator
-      [1, 2, 3].forEach(i => {
-        const ind = document.getElementById(`step-indicator-${i}`);
-        if (i === step) {
-          ind.className = 'flex items-center space-x-1 font-semibold text-rose-600 transition-colors';
-          ind.children[0].className = 'w-6 h-6 rounded-full bg-rose-500 text-white flex items-center justify-center text-xs';
-        } else if (i < step) {
-          ind.className = 'flex items-center space-x-1 font-semibold text-emerald-600 transition-colors';
-          ind.children[0].className = 'w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs';
-        } else {
-          ind.className = 'flex items-center space-x-1 font-semibold text-slate-400 transition-colors';
-          ind.children[0].className = 'w-6 h-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs';
-        }
-      });
-
-      playNote(440 + step * 100, 'sine', 0.2);
+      playNote(440 + step * 80, 'sine', 0.25);
     }
 
     // Candle Blowing Logic
@@ -818,7 +862,7 @@
       const flame = document.getElementById(`flame-${index}`);
       if (flame) flame.classList.add('extinguished');
 
-      playNote(300 - index * 40, 'triangle', 0.25);
+      playNote(320 - index * 30, 'triangle', 0.25);
       triggerBurstAtElement(flame);
 
       if (unlitCandles.every(c => !c)) {
@@ -838,33 +882,28 @@
       playNote(587.33, 'sine', 0.6);
     }
 
-    // Flower Gathering Logic
-    function pickFlower(button, emoji) {
-      button.classList.add('picked');
-      collectedFlowers.push(emoji);
+    // Sunflower Bouquet Receiving Logic
+    function receiveSunflowerBouquet() {
+      if (isBouquetReceived) return;
 
-      playNote(400 + collectedFlowers.length * 60, 'sine', 0.25);
-      triggerBurstAtElement(button);
-
-      updateBouquetDisplay();
-    }
-
-    function updateBouquetDisplay() {
-      const container = document.getElementById('collected-bouquet-display');
-      const modalContainer = document.getElementById('modal-bouquet-container');
+      isBouquetReceived = true;
+      const card = document.getElementById('sunflower-card');
+      const badge = document.getElementById('sunflower-status-badge');
       const nextBtn = document.getElementById('next-to-letter-btn');
 
-      if (collectedFlowers.length > 0) {
-        container.innerHTML = collectedFlowers.map(f => `<span class="animate-bounce inline-block">${f}</span>`).join(' ');
-        modalContainer.innerHTML = collectedFlowers.join(' ');
+      card.classList.add('received');
+      badge.className = "mt-4 inline-block bg-emerald-100 text-emerald-800 text-xs px-4 py-1.5 rounded-full font-semibold border border-emerald-300";
+      badge.innerHTML = 'Sunflower Bouquet Received! 🌻';
 
-        nextBtn.disabled = false;
-        nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-        nextBtn.classList.add('animate-pulse');
-      }
+      nextBtn.disabled = false;
+      nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      nextBtn.classList.add('animate-bounce');
+
+      triggerBurstAtElement(card);
+      playNote(659.25, 'sine', 0.5);
     }
 
-    // Floating Hearts & Sparkles Canvas Background
+    // Floating Hearts/Stars Canvas Background
     const canvas = document.getElementById('particle-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
@@ -885,8 +924,8 @@
         this.speedX = isBurst ? (Math.random() - 0.5) * 7 : (Math.random() - 0.5) * 1.2;
         this.speedY = isBurst ? (Math.random() - 0.5) * 7 : -Math.random() * 1.2 - 0.4;
         this.opacity = isBurst ? 1 : Math.random() * 0.5 + 0.2;
-        this.color = ['#ff758c', '#e84393', '#fd79a8', '#fecfef', '#b83b5e'][Math.floor(Math.random() * 5)];
-        this.isHeart = Math.random() > 0.25;
+        this.color = ['#ff758c', '#fbbf24', '#f59e0b', '#fecfef', '#b83b5e'][Math.floor(Math.random() * 5)];
+        this.isHeart = Math.random() > 0.3;
         this.rotation = Math.random() * Math.PI * 2;
         this.isBurst = isBurst;
         this.life = isBurst ? 90 : Infinity;
@@ -955,7 +994,7 @@
       const rect = element.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
-      for (let i = 0; i < 18; i++) {
+      for (let i = 0; i < 20; i++) {
         particles.push(new Particle(centerX, centerY, true));
       }
     }
@@ -978,7 +1017,7 @@
     initParticles();
     animateParticles();
 
-    // Envelope Flow Controls
+    // Envelope & Modal Controls
     function openEnvelope() {
       if (isEnvelopeOpen) {
         showLetterModal();
@@ -1015,7 +1054,7 @@
     function restartExperience() {
       hideLetterModal();
       unlitCandles = [true, true, true];
-      collectedFlowers = [];
+      isBouquetReceived = false;
       
       // Reset Candles
       [0, 1, 2].forEach(i => {
@@ -1025,14 +1064,18 @@
       document.getElementById('blow-all-btn').classList.remove('hidden');
       document.getElementById('next-to-flowers-btn').classList.add('hidden');
 
-      // Reset Flower Buttons
-      document.querySelectorAll('.flower-item').forEach(btn => btn.classList.remove('picked'));
-      document.getElementById('collected-bouquet-display').innerHTML = '<span class="text-xs text-slate-400 italic font-normal">Tap flowers above to add them here...</span>';
-      
+      // Reset Sunflower Card
+      const card = document.getElementById('sunflower-card');
+      const badge = document.getElementById('sunflower-status-badge');
       const nextLetterBtn = document.getElementById('next-to-letter-btn');
+
+      card.classList.remove('received');
+      badge.className = "mt-4 inline-block bg-amber-100 text-amber-800 text-xs px-4 py-1.5 rounded-full font-semibold border border-amber-300";
+      badge.innerHTML = 'Tap to receive bouquet ✨';
+
       nextLetterBtn.disabled = true;
       nextLetterBtn.classList.add('opacity-50', 'cursor-not-allowed');
-      nextLetterBtn.classList.remove('animate-pulse');
+      nextLetterBtn.classList.remove('animate-bounce');
 
       closeEnvelope();
       goToStep(1);
